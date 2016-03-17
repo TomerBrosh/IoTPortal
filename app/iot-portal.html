@@ -9,17 +9,25 @@
       :host {
         display: block;
       }
-      .critical{
+
+      .critical {
         background-color: red;
       }
+
+      paper-material {
+        width: 200px;
+        height: 100px;
+      }
     </style>
-    <iron-ajax id="infoService" auto url="[[dataUrl('infoService')]]" handle-as="json" on-response="handleResponse" last-response="{{info}}"
+    <iron-ajax id="infoService" auto url="[[dataUrl('infoService')]]" handle-as="json" on-response="handleResponse"
+               last-response="{{info}}"
                on-error="ajaxError" verbose></iron-ajax>
-    <h1>{{status.1}}</h1>
+    <h1>{{info.soldiers.length}} חיילים</h1>
     <template is="dom-repeat" items="{{info.soldiers}}" as="soldier">
-      <paper-material class$="{{info.status[soldier.status]}}">
-        <div class="title">{{soldier.name}}, {{soldier.status}}</div>
-        <div class="secondary">{{soldier.bloodType}}</div>
+      <paper-material elevation="{{soldier.status}}" animated style="background-color: rgb(220, 255, 247)" onclick="this.elevation++" onmouseout="this.elevation--" onmousewheel="this.elevation=2">
+        <p>שם: {{soldier.name}}| סטטוס:  {{soldier.status}}</p>
+
+        <p>דם: {{soldier.bloodType}}</p>
       </paper-material>
     </template>
   </template>
@@ -55,7 +63,9 @@
         this.$.toast.show();
       },
 
-      handleResponse:function(data){this.status = data.detail.response.status},
+//      handleResponse: function (data) {
+//        this.status = data.detail.response.status
+//      },
       ready: function () {
       }
     })
