@@ -1,0 +1,7 @@
+{
+  "status": {"0":"normal","1":"hurt","2":"critical","3":"error"},
+ "soldiers": [
+   {"name": "תומר ברוש", "heartRate":75, "activityLvl":0, "bloodType":0,"status":0},
+   {"name": "שגיא חצבי", "heartRate":725, "activityLvl":20, "bloodType":20,"status":3}
+ ]
+}

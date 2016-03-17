@@ -1,0 +1,64 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+
+
+<dom-module id="iot-portal">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .critical{
+        background-color: red;
+      }
+    </style>
+    <iron-ajax id="infoService" auto url="[[dataUrl('infoService')]]" handle-as="json" on-response="handleResponse" last-response="{{info}}"
+               on-error="ajaxError" verbose></iron-ajax>
+    <h1>{{status.1}}</h1>
+    <template is="dom-repeat" items="{{info.soldiers}}" as="soldier">
+      <paper-material class$="{{info.status[soldier.status]}}">
+        <div class="title">{{soldier.name}}, {{soldier.status}}</div>
+        <div class="secondary">{{soldier.bloodType}}</div>
+      </paper-material>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: 'iot-portal',
+
+      properties: {
+        info: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        },
+        status: {
+          type: Array,
+          reflectToAttribute: true,
+          notify: true
+        }
+      },
+      attached: function () {
+        this.status = [];
+      },
+
+      dataUrl: function (string) {
+        return 'data/' + string + '.json';
+      },
+      ajaxError: function (err) {
+        alert(err.message);
+        this.showToast('Sorry, couldn\'t load data. Please try again later.');
+      },
+      showToast: function (text) {
+        this.$.toast.text = text;
+        this.$.toast.show();
+      },
+
+      handleResponse:function(data){this.status = data.detail.response.status},
+      ready: function () {
+      }
+    })
+    ;
+  </script>
+</dom-module>
