@@ -12,7 +12,6 @@
 
       paper-material {
         width: 100%;
-        min-height: 400px;
         background-color: rgba(96, 125, 139, 0.2);
         text-align: center;
       }
@@ -24,13 +23,20 @@
 
     </style>
     <paper-material elevation="3">
-      <h2>{{currentStatus.toString}}</h2>
 
-      <div class="graphs">
-        <template is="dom-repeat" items="{{currentStatus.array}}" as="soldier" >
-          <graph-personal soldier="{{soldier}}" ></graph-personal>
-        </template>
-      </div>
+      <toggle-container>
+        <h2>{{currentStatus.toString}}</h2>
+        <div class="graphs">
+          <template is="dom-repeat" items="{{currentStatus.array}}" as="soldier">
+            <graph-personal soldier="{{soldier}}"></graph-personal>
+          </template>
+        </div>
+        <hr>
+      </toggle-container>
+      <h2>מצב כללי</h2>
+      <iframe
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?editview=templating&panelId=2&fullscreen&from=1458412929222&to=1458413229222"
+        width="100%" height="600" frameborder="0"></iframe>
     </paper-material>
 
   </template>
@@ -92,6 +98,10 @@
           }
         }
       },
+
+//      listeners: {
+//        'neon-animation-finish': '_onNeonAnimationFinish'
+//      },
 
       show: function () {
         this.style.visibility = 'visible';
