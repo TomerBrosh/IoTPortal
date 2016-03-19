@@ -1,0 +1,194 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<dom-module id="total-monitor" attributes="soldiers">
+  <template>
+    <style>
+      :host {
+        display: inline-flex;
+        visibility: hidden;
+      }
+
+      paper-material {
+        min-width: 140px;
+        min-height: 50px;
+        max-width: 200px;
+        padding: 5px;
+        @apply(--layout-vertical);
+        background-color: rgba(221, 227, 231, 0.36);
+      }
+
+      paper-listbox {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        background-color:transparent;
+      }
+
+      paper-icon-item {
+        font-size: 110%;
+        vertical-align: baseline;
+        line-height: 27px;
+        color: #607D8B;
+        outline: none;
+        @apply(--layout-flex);
+        margin-top:-10px;
+        margin-bottom:-10px;
+      }
+
+      iron-icon {
+        margin-left: 5px;
+      }
+
+      iron-icon[icon="check-circle"] {
+        --iron-icon-fill-color: #7cffa1;
+      }
+
+      iron-icon[icon="warning"] {
+        --iron-icon-fill-color: #ffc853;
+      }
+
+      iron-icon[icon*="local-hospital"] {
+        --iron-icon-fill-color: #8e3230;
+      }
+
+      iron-icon[icon="help"] {
+        --iron-icon-fill-color: #8993c5;
+      }
+
+      paper-spinner {
+        position: relative;
+        @apply(--layout-center-justified);
+      }
+
+      .title {
+        font-size: 150%;
+        font-weight: 600;
+      }
+
+    </style>
+
+    <paper-material elevation="0" animated id="statusMonitorCard">
+      <div class="title">סטטוס חיילים:</div>
+      <template is="dom-if" if="{{count}}">
+        <paper-listbox>
+          <template is="dom-if" if$="{{count.normal}}">
+            <paper-icon-item class="flex">
+              <iron-icon icon="check-circle" item-icon></iron-icon>
+              <span>{{count.normal}}/{{count.total}} במצב תקין</span>
+            </paper-icon-item>
+            <br>
+          </template>
+          <template is="dom-if" if$="{{count.hurt}}">
+            <paper-icon-item class="flex">
+              <iron-icon icon="warning" item-icon></iron-icon>
+              <span>{{count.hurt}}/{{count.total}} במצב בינוני</span>
+            </paper-icon-item>
+            <br>
+          </template>
+          <template is="dom-if" if$="{{count.critical}}">
+            <paper-icon-item class="flex">
+              <iron-icon icon="maps:local-hospital" item-icon></iron-icon>
+              <span>{{count.critical}}/{{count.total}} במצב קשה</span>
+            </paper-icon-item>
+            <br>
+          </template>
+          <template is="dom-if" if$="{{count.unknown}}">
+            <paper-icon-item class="flex">
+              <iron-icon icon="help" item-icon></iron-icon>
+              <span>{{count.unknown}}/{{count.total}} במצב לא ידוע</span>
+            </paper-icon-item>
+          </template>
+        </paper-listbox>
+      </template>
+      <template is="dom-if" if="{{!count}}">
+        <paper-spinner active></paper-spinner>
+      </template>
+    </paper-material>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'total-monitor',
+
+      behaviors: [Polymer.NeonAnimationBehavior, Polymer.NeonAnimationRunnerBehavior],
+
+      properties: {
+
+        soldiers: {
+          type: Object,
+          notify: true
+        },
+
+        count: {
+          type: Object,
+          value: null,
+          computed: 'computeTotal(soldiers)'
+        },
+
+        animationConfig: {
+          value: function () {
+            return {
+              // fade-in-animation is run with a 50ms delay from slide-down-animation
+              'entry': {
+                name: 'fade-in-animation',
+                node: this,
+                timing: {delay: 1000}
+              }
+            }
+          }
+        }
+      },
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      _onNeonAnimationFinish: function () {
+//        if(this.count) {
+          console.log("status count: ");
+          console.log("total: " + this.count.total + ", normal: " + (this.count.normal || 0) + ", hurt: " + (this.count.hurt || 0) + ", critical: " + (this.count.critical || 0));
+//        }
+
+      },
+
+      show: function () {
+        this.style.visibility = 'visible';
+        this.playAnimation('entry');
+      },
+
+      ready: function () {
+        this.async(function () {
+          this.show();
+        })
+      },
+
+      computeTotal: function (soldiers) {
+        this.count = null;
+        var total = 0, critical = null, hurt = null, normal = null, unknown = null;
+        soldiers.forEach(function (soldier) {
+          total++;
+          switch (soldier.status) {
+            case 0:
+              normal++;
+              break;
+            case 1:
+              hurt++;
+              break;
+            case 2:
+              critical++;
+              break;
+            case 3:
+              unknown++;
+              break;
+          }
+        });
+        if (critical) this.$.statusMonitorCard.elevation = 4;
+        else if (unknown) this.$.statusMonitorCard.elevation = 3;
+        else if (hurt) this.$.statusMonitorCard.elevation = 2;
+        else if (normal) this.$.statusMonitorCard.elevation = 1;
+
+        return {'total': total, 'normal': normal, 'hurt': hurt, 'critical': critical, 'unknown': unknown}
+
+      }
+    });
+  </script>
+</dom-module>

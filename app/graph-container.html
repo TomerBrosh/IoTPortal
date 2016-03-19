@@ -1,0 +1,141 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<dom-module id="graph-container" attributes="soldiers">
+  <template>
+    <style>
+      :host {
+        display: inline-flex;
+        visibility: hidden;
+        width: 100%;
+        margin-top: 5px;
+      }
+
+      paper-material {
+        width: 100%;
+        min-height: 400px;
+        background-color: rgba(96, 125, 139, 0.2);
+        text-align: center;
+      }
+
+      .graphs {
+        @apply(--layout-horizontal);
+      }
+
+
+    </style>
+    <paper-material elevation="3">
+      <h2>חיילים במצב קשה:</h2>
+      <div class="graphs">
+      <template is="dom-repeat" items="{{critical}}" as="soldier" indexAs="index">
+        <graph-personal soldier="{{soldier}}" index="{{index}}"></graph-personal>
+      </template>
+      </div>
+    </paper-material>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'graph-container',
+
+      behaviors: [Polymer.NeonAnimationBehavior, Polymer.NeonAnimationRunnerBehavior],
+
+      properties: {
+
+        soldiers: {
+          type: Object,
+          notify: true
+        },
+        ordered: {
+          type: Object,
+          value: null,
+          notify: true,
+          computed: 'orderSoldiers(soldiers)'
+        },
+        critical: {
+          type: Array,
+          value: []
+        },
+        hurt: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+        normal: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+        unknown: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        animationConfig: {
+          value: function () {
+            return {
+              // fade-in-animation is run with a 50ms delay from slide-down-animation
+              'entry': {
+                name: 'slide-from-right-animation',
+                node: this,
+                timing: {"delay": 700, "duration": 1000}
+
+              }
+            }
+          }
+        }
+      },
+
+      show: function () {
+        this.style.visibility = 'visible';
+        this.playAnimation('entry');
+      },
+
+      ready: function () {
+        this.async(function () {
+          this.show();
+        })
+      },
+
+
+      orderSoldiers: function (soldiers) {
+        var normal = [], hurt = [], critical = [], unknown = [],
+          all = {"normal": [], "hurt": [], "critical": [], "unknown": []};
+        soldiers.forEach(function (soldier) {
+          var basicInfo = {"id": soldier.id, "name": soldier.firstname + ' ' + soldier.lastname};
+          var info = {
+            "id": soldier.id, "name": soldier.firstname + ' ' + soldier.lastname, "vi": soldier.vi,
+            "activity": soldier.activity, "heartrate": soldier.heart_rate
+          };
+          switch (soldier.status) {
+            case 0:
+              normal.push(info);
+              delete info.status;
+              all.normal.push(basicInfo);
+              break;
+            case 1:
+              hurt.push(info);
+              delete info.status;
+              all.hurt.push(basicInfo);
+              break;
+            case 2:
+              critical.push(info);
+              delete info.status;
+              all.critical.push(basicInfo);
+              break;
+            case 3:
+              unknown.push(info);
+              delete info.status;
+              all.unknown.push(basicInfo);
+              break;
+          }
+        });
+        this.normal = normal;
+        this.hurt = hurt;
+        this.critical = critical;
+        this.unknown = unknown;
+        return all;
+      }
+    });
+  </script>
+</dom-module>

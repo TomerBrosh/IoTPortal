@@ -1,7 +1,4 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/paper-toast/paper-toast.html">
-
 
 <dom-module id="iot-portal">
   <template>
@@ -10,45 +7,53 @@
         display: block;
       }
 
+      .head-container {
+        @apply(--layout-horizontal);
+        height: 190px;
+      }
+
+      .toolbar {
+        @apply(--layout-flex);
+      }
+
+      .graph-container {
+        @apply(--layout-horizontal);
+      }
+
       .critical {
         background-color: red;
       }
-
-      paper-material {
-        width: 200px;
-        height: 100px;
-      }
     </style>
-    <iron-ajax id="infoService" auto url="[[dataUrl('infoService')]]" handle-as="json" on-response="handleResponse"
-               last-response="{{info}}"
-               on-error="ajaxError" verbose></iron-ajax>
-    <h1>{{info.soldiers.length}} חיילים</h1>
-    <template is="dom-repeat" items="{{info.soldiers}}" as="soldier">
-      <paper-material elevation="{{soldier.status}}" animated style="background-color: rgb(220, 255, 247)" onclick="this.elevation++" onmouseout="this.elevation--" onmousewheel="this.elevation=2">
-        <p>שם: {{soldier.name}} | סטטוס:  {{soldier.status}}</p>
+    <iron-ajax id="soldierService" auto url="http://iotservices.westeurope.cloudapp.azure.com:5000/api/metrics"
+               on-response="handleResponse" last-response="{{soldiers}}" last-error="ajaxError"></iron-ajax>
+    <div class="head-container">
+      <iot-toolbar class="toolbar" soldiers$="[[soldiers]]"></iot-toolbar>
+      <total-monitor id="totalMonitor" soldiers$="[[soldiers]]"></total-monitor>
+    </div>
+    <div class="graph-container">
+      <graph-container soldiers$="{{soldiers}}"></graph-container>
+    </div>
+  </template>
 
-        <p>דם: {{soldier.bloodType}}</p>
-      </paper-material>
-    </template>
+  <!--<h1>{{info.soldiers.length}} חיילים</h1>-->
+  <!--<template is="dom-repeat" items="{{info.soldiers}}" as="soldier">-->
+  <!--<paper-material elevation="{{soldier.status}}" animated style="background-color: rgb(220, 255, 247)" onclick="this.elevation++" onmouseout="this.elevation&#45;&#45;" onmousewheel="this.elevation=2">-->
+  <!--<p>שם: {{soldier.name}} | סטטוס:  {{soldier.status}}</p>-->
+
+  <!--<p>דם: {{soldier.bloodType}}</p>-->
+  <!--</paper-material>-->
+  <!--</template>-->
+  <!--</template>-->
   </template>
   <script>
     Polymer({
       is: 'iot-portal',
 
       properties: {
-        info: {
+        soldiers: {
           type: Object,
-          notify: true,
-          reflectToAttribute: true
-        },
-        status: {
-          type: Array,
-          reflectToAttribute: true,
           notify: true
         }
-      },
-      attached: function () {
-        this.status = [];
       },
 
       dataUrl: function (string) {
@@ -56,17 +61,17 @@
       },
       ajaxError: function (err) {
         alert(err.message);
-        this.showToast('Sorry, couldn\'t load data. Please try again later.');
+        console.log('Sorry, couldn\'t load data. Please try again later.');
       },
-      showToast: function (text) {
-        this.$.toast.text = text;
-        this.$.toast.show();
+      handleResponse: function (data) {
+        var soldierService = this.$.soldierService;
+        this.loadData = setTimeout(function () {
+          console.log("requesting soldiers");
+          soldierService.generateRequest();
+        }, 10000)
       },
-
-//      handleResponse: function (data) {
-//        this.status = data.detail.response.status
-//      },
       ready: function () {
+        console.log("started iot-portal");
       }
     })
     ;

@@ -6,9 +6,6 @@
   <title>פורטל IoT</title>
   <link rel="stylesheet" href="styles/main.css">
 
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="elements.html">
-
   <!-- Chrome -->
   <meta name="theme-color" content="#a7ffeb"/>
   <meta name="mobile-web-app-capable" content="yes"/>
@@ -18,10 +15,19 @@
   <link rel="apple-touch-icon" href="resources/app-icon-192x192.png"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-</head>
-<body dir="rtl">
+
+
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="js/moment.js"></script>
+  <link rel="import" href="elements.html">
+  <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+
+    </head>
+<body dir="rtl" class="fullbleed layout vertical">
+<button onclick="clearInterval(document.querySelector('iot-portal').loadData)
+  ">StopGettingData</button>
 <template is="dom-bind" id="app">
-<iot-portal></iot-portal>
+<iot-portal class="flex"></iot-portal>
 </template>
 <!--<script>-->
 <!--// Configure Moment.js to start the week on Monday.-->

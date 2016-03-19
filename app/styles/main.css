@@ -7,12 +7,23 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
+html {
+  margin: -7px;
+  overflow: hidden;
+}
+
 body {
-  background: #ffffff;
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #303f9f;
+  background: #FFFFFF;
+  font-family:p-helvete;
+  color: #607D8B;
+}
+
+@font-face {
+  font-family: p-helvete;
+  src: url(../resources/osp_le-patin-helvete-webfont.ttf);
 }
 
 .page-title {
   outline: none;
 }
+
