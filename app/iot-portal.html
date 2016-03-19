@@ -27,11 +27,11 @@
     <iron-ajax id="soldierService" auto url="http://iotservices.westeurope.cloudapp.azure.com:5000/api/metrics"
                on-response="handleResponse" last-response="{{soldiers}}" last-error="ajaxError"></iron-ajax>
     <div class="head-container">
-      <iot-toolbar class="toolbar" soldiers$="[[soldiers]]"></iot-toolbar>
-      <total-monitor id="totalMonitor" soldiers$="[[soldiers]]"></total-monitor>
+      <iot-toolbar class="toolbar" soldiers="[[soldiers]]"></iot-toolbar>
+      <total-monitor id="totalMonitor" soldiers="[[soldiers]]" selected="{{selectedStatus}}"></total-monitor>
     </div>
     <div class="graph-container">
-      <graph-container soldiers$="{{soldiers}}"></graph-container>
+      <graph-container soldiers="[[soldiers]]" selected="{{selectedStatus}}"></graph-container>
     </div>
   </template>
 
@@ -53,7 +53,16 @@
         soldiers: {
           type: Object,
           notify: true
+        },
+        selectedStatus: {
+          type: Number,
+          observer: 'statusselected'
         }
+      },
+
+
+      statusselected: function () {
+        console.log(this.selectedStatus);
       },
 
       dataUrl: function (string) {

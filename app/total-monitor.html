@@ -1,6 +1,6 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 
-<dom-module id="total-monitor" attributes="soldiers">
+<dom-module id="total-monitor" attributes="soldiers selectedStatus">
   <template>
     <style>
       :host {
@@ -17,10 +17,14 @@
         background-color: rgba(221, 227, 231, 0.36);
       }
 
-      paper-listbox {
+      paper-listbox, .vertical {
         @apply(--layout-vertical);
         @apply(--layout-flex);
-        background-color:transparent;
+        background-color: transparent;
+      }
+
+      .noutline {
+        outline: none;
       }
 
       paper-icon-item {
@@ -30,8 +34,8 @@
         color: #607D8B;
         outline: none;
         @apply(--layout-flex);
-        margin-top:-10px;
-        margin-bottom:-10px;
+        margin-top: -10px;
+        margin-bottom: -10px;
       }
 
       iron-icon {
@@ -70,33 +74,32 @@
       <div class="title">סטטוס חיילים:</div>
       <template is="dom-if" if="{{count}}">
         <paper-listbox>
-          <template is="dom-if" if$="{{count.normal}}">
-            <paper-icon-item class="flex">
-              <iron-icon icon="check-circle" item-icon></iron-icon>
-              <span>{{count.normal}}/{{count.total}} במצב תקין</span>
-            </paper-icon-item>
-            <br>
-          </template>
-          <template is="dom-if" if$="{{count.hurt}}">
-            <paper-icon-item class="flex">
-              <iron-icon icon="warning" item-icon></iron-icon>
-              <span>{{count.hurt}}/{{count.total}} במצב בינוני</span>
-            </paper-icon-item>
-            <br>
-          </template>
-          <template is="dom-if" if$="{{count.critical}}">
-            <paper-icon-item class="flex">
-              <iron-icon icon="maps:local-hospital" item-icon></iron-icon>
-              <span>{{count.critical}}/{{count.total}} במצב קשה</span>
-            </paper-icon-item>
-            <br>
-          </template>
-          <template is="dom-if" if$="{{count.unknown}}">
-            <paper-icon-item class="flex">
-              <iron-icon icon="help" item-icon></iron-icon>
-              <span>{{count.unknown}}/{{count.total}} במצב לא ידוע</span>
-            </paper-icon-item>
-          </template>
+          <iron-selector selected="{{selected}}" class="vertical noutline">
+            <div class="flex">
+              <paper-icon-item>
+                <iron-icon icon="check-circle" item-icon></iron-icon>
+                <span>{{count.normal}}/{{count.total}} במצב תקין</span>
+              </paper-icon-item>
+              <br></div>
+            <div class="flex">
+              <paper-icon-item>
+                <iron-icon icon="warning" item-icon></iron-icon>
+                <span>{{count.hurt}}/{{count.total}} במצב בינוני</span>
+              </paper-icon-item>
+              <br></div>
+            <div class="flex">
+              <paper-icon-item>
+                <iron-icon icon="maps:local-hospital" item-icon></iron-icon>
+                <span>{{count.critical}}/{{count.total}} במצב קשה</span>
+              </paper-icon-item>
+              <br></div>
+            <div class="flex">
+              <paper-icon-item>
+                <iron-icon icon="help" item-icon></iron-icon>
+                <span>{{count.unknown}}/{{count.total}} במצב לא ידוע</span>
+              </paper-icon-item>
+            </div>
+          </iron-selector>
         </paper-listbox>
       </template>
       <template is="dom-if" if="{{!count}}">
@@ -123,6 +126,10 @@
           value: null,
           computed: 'computeTotal(soldiers)'
         },
+        selected: {
+          type: Number,
+          notify: true
+        },
 
         animationConfig: {
           value: function () {
@@ -131,7 +138,7 @@
               'entry': {
                 name: 'fade-in-animation',
                 node: this,
-                timing: {delay: 1000}
+                timing: {delay: 1000, "duration": 500}
               }
             }
           }
@@ -144,8 +151,9 @@
 
       _onNeonAnimationFinish: function () {
 //        if(this.count) {
-          console.log("status count: ");
-          console.log("total: " + this.count.total + ", normal: " + (this.count.normal || 0) + ", hurt: " + (this.count.hurt || 0) + ", critical: " + (this.count.critical || 0));
+        console.log("status count: ");
+        console.log("total: " + this.count.total + ", normal: " + (this.count.normal || 0) + ", hurt: " + (this.count.hurt || 0) + ", critical: " + (this.count.critical || 0));
+        this.selected = 2;
 //        }
 
       },
@@ -163,7 +171,7 @@
 
       computeTotal: function (soldiers) {
         this.count = null;
-        var total = 0, critical = null, hurt = null, normal = null, unknown = null;
+        var total = 0, critical = 0, hurt = 0, normal = 0, unknown = 0;
         soldiers.forEach(function (soldier) {
           total++;
           switch (soldier.status) {

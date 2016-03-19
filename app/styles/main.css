@@ -9,12 +9,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 html {
   margin: -7px;
-  overflow: hidden;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 13px;
+}
+
+::-webkit-scrollbar-thumb:hover  {
+  visibility: visible;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 20px #b0e2ff;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px #223945;
 }
 
 body {
   background: #FFFFFF;
-  font-family:p-helvete;
+  font-family: p-helvete;
   color: #607D8B;
 }
 

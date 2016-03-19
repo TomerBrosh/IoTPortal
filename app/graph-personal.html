@@ -4,7 +4,7 @@
   <template>
     <style>
       :host {
-        visibility: hidden;
+        /*visibility: hidden;*/
         width: 100%;
         margin-right:5px;
         @apply(--layout-horizontal);
@@ -69,7 +69,7 @@
         <span class="health-block"><iron-icon icon="maps:directions-run"></iron-icon> {{soldier.activity}}</span>
         <span class="health-block"><iron-icon icon="android">VI</iron-icon> {{soldier.vi}}</span>
       </div>
-      <iframe src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(5)}}&to={{time(-3)}}&var-id={{soldier.id}}" width="250" height="150" frameborder="0"></iframe>
+      <iframe src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(5)}}&to={{time(-3)}}&var-id={{soldier.id}}" width="250" height="167" frameborder="0"></iframe>
     </paper-material>
 
   </template>
@@ -83,7 +83,7 @@
 
         soldier: {
           type: Object,
-          notify: true
+          notify: true,
         },
         index: {
           type: Number,
@@ -109,25 +109,25 @@
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
 
-      _onNeonAnimationFinish: function () {
-        console.log("loaded graph container ");
-      },
+//      _onNeonAnimationFinish: function () {
+//        console.log("loaded " + this.soldier.id + "'s graph");
+//      },
 
-      show: function () {
-        this.style.visibility = 'visible';
-        this.playAnimation('entry');
-      },
+//      show: function () {
+//        this.style.visibility = 'visible';
+//        this.playAnimation('entry');
+//      },
 
       time: function (mins) {
         console.log(moment().subtract(mins, 'm').format() + ':  : ' + moment().add(mins, 'm'));
         return moment().add(mins, 'm');
-      },
-
-      ready: function () {
-        this.async(function () {
-          this.show();
-        })
       }
+
+//      ready: function () {
+//        this.async(function () {
+//          this.show();
+//        })
+//      }
     });
   </script>
 </dom-module>

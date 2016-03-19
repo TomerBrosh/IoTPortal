@@ -1,6 +1,6 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 
-<dom-module id="graph-container" attributes="soldiers">
+<dom-module id="graph-container" attributes="soldiers selectedStatus">
   <template>
     <style>
       :host {
@@ -24,11 +24,12 @@
 
     </style>
     <paper-material elevation="3">
-      <h2>חיילים במצב קשה:</h2>
+      <h2>{{currentStatus.toString}}</h2>
+
       <div class="graphs">
-      <template is="dom-repeat" items="{{critical}}" as="soldier" indexAs="index">
-        <graph-personal soldier="{{soldier}}" index="{{index}}"></graph-personal>
-      </template>
+        <template is="dom-repeat" items="{{currentStatus.array}}" as="soldier" >
+          <graph-personal soldier="{{soldier}}" ></graph-personal>
+        </template>
       </div>
     </paper-material>
 
@@ -44,6 +45,13 @@
         soldiers: {
           type: Object,
           notify: true
+        },
+        selected: {
+          type: Number
+        },
+        currentStatus: {
+          type: Array,
+          computed: 'getCurrentStatus(selected)'
         },
         ordered: {
           type: Object,
@@ -78,8 +86,7 @@
               'entry': {
                 name: 'slide-from-right-animation',
                 node: this,
-                timing: {"delay": 700, "duration": 1000}
-
+                timing: {"delay": 1500, "duration": 1000}
               }
             }
           }
@@ -135,6 +142,22 @@
         this.critical = critical;
         this.unknown = unknown;
         return all;
+      },
+      getCurrentStatus: function (status) {
+        switch (status) {
+          case 0:
+            return {"array": this.normal, "toString": "חיילים במצב תקין:"};
+            break;
+          case 1:
+            return {"array": this.hurt, "toString": "חיילים במצב בינוני:"};
+            break;
+          case 2:
+            return {"array": this.critical, "toString": "חיילים במצב קשה:"};
+            break;
+          case 3:
+            return {"array": this.unknown, "toString": "חיילים במצב לא ידוע:"};
+            break;
+        }
       }
     });
   </script>
