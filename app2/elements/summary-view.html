@@ -1,0 +1,195 @@
+<link rel="import" href="app-theme.html" />
+<dom-module id="summary-view">
+    <template>
+        <style include="app-theme"></style>
+        <style>
+            :host {
+                display: block;
+            }
+            #prev,
+            #next {
+                outline: none;
+                cursor: pointer;
+                color: var(--text-primary-color);
+                background: none;
+                border: none;
+                border-bottom: 1px solid transparent;
+                font-size: 12px;
+                text-transform: uppercase;
+                font-weight: bold;
+                margin: 8px;
+                position: relative;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                z-index: 10;
+            }
+            #prev {
+                float: left;
+                padding: 5px;
+            }
+            #next iron-icon,
+            #prev iron-icon {
+                fill: #00bfa5;
+                --iron-icon-height: 18px;
+                --iron-icon-width: 18px;
+            }
+            #next {
+                float: right;
+                padding: 5px;
+            }
+            #controls::after {
+                content: "";
+                display: block;
+                clear: both;
+            }
+            summary-rings {
+                position: relative;
+                z-index: 9;
+            }
+            @media (max-width: 839px) {
+                #summary-tables {
+                    @apply(--layout-vertical);
+                }
+                #summary-tables summary-table {
+                    margin: 10px 0 20px 0;
+                }
+            }
+            @media (min-width: 840px) {
+                #summary-tables {
+                    @apply(--layout-horizontal);
+                    @apply(--layout-wrap);
+                }
+                #summary-tables summary-table {
+                    width: 50%;
+                    padding: 10px 20px;
+                    box-sizing: border-box;
+                }
+            }
+        </style>
+        <app-toolbar user="[[user]]">
+            <span class="h1">Summary</span>
+            <span class="h2">Selected week <span class="circle">[[weekData.weekNumber]]</span></span>
+            <span class="details">
+                <span>[[_weekStartDate(weekData.weekNumber)]]</span>
+                &ndash;
+                <span>[[_weekEndDate(weekData.weekNumber)]]</span>
+            </span>
+        </app-toolbar>
+        <div id="controls">
+            <div id="prev" on-tap="_prevWeek">
+                <iron-icon icon="app-icons:chevron-left"></iron-icon>
+                Previous week
+            </div>
+            <div id="next" on-tap="_nextWeek">
+                Next week
+                <iron-icon icon="app-icons:chevron-right"></iron-icon>
+            </div>
+        </div>
+        <summary-rings id="summary" summary-rows="[[_goalSummary(weekData, user)]]" on-tap="_showDetails"></summary-rings>
+
+        <div id="summary-tables" on-tap="_showDetails">
+            <template is="dom-repeat" items="[[_workoutsBySport(weekData)]]">
+                <summary-table workouts="[[item]]" goals="[[_goalSummary(weekData, user)]]"></summary-table>
+            </template>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'summary-view',
+            behaviors: [
+                Polymer.NeonAnimatableBehavior
+            ],
+            properties: {
+                user: Object,
+                weekData: Object,
+                animationConfig: {
+                    value: function() {
+                        return {
+                            'entry': {
+                                name: 'slide-from-left-animation',
+                                node: this
+                            },
+                            'exit': {
+                                name: 'slide-left-animation',
+                                node: this
+                            }
+                        };
+                    }
+                }
+            },
+            _goalSummary: function(weekData, user) {
+                var totals = this._totalsBySport(weekData);
+                return user.goals.map(function(goal) {
+                    var achieved = 0;
+                    var total = 0;
+                    if (totals[goal.sport]) {
+                        total = totals[goal.sport][goal.type];
+                        achieved = Math.round(total / goal.goal * 100);
+                    }
+                    return {
+                        goal: goal,
+                        value: achieved,
+                        left: Math.max(0, goal.goal - total)
+                    };
+                });
+            },
+            _uniqueSports: function(weekData) {
+                return weekData.workouts.reduce(function(result, workout) {
+                    if (result.indexOf(workout.sport) === -1) {
+                        result.push(workout.sport);
+                    }
+                    return result;
+                }, []);
+
+            },
+            _totalsBySport: function(weekData) {
+                var result = {};
+                weekData.workouts.forEach(function(workout) {
+                    if (!result[workout.sport]) {
+                        result[workout.sport] = {
+                            duration: 0,
+                            distance: 0
+                        };
+                    }
+                    result[workout.sport].duration += workout.duration;
+                    result[workout.sport].distance += workout.distance;
+                });
+                return result;
+            },
+            _workoutsBySport: function(weekData) {
+                var sports = this._uniqueSports(weekData);
+
+                var result = [];
+                weekData.workouts.forEach(function(workout) {
+                    var index = sports.indexOf(workout.sport);
+                    if (!result[index]) {
+                        result[index] = [];
+                    }
+                    result[index].push(workout);
+                });
+                return result;
+            },
+            _weekStartDate: function(weekNumber) {
+                return moment('2015-W' + weekNumber).startOf('week').format('Do MMMM');
+            },
+            _weekEndDate: function(weekNumber) {
+                return moment('2015-W' + weekNumber).endOf('week').format('Do MMMM');
+            },
+            _nextWeek: function() {
+                this.fire('next-week');
+            },
+            _prevWeek: function() {
+                this.fire('prev-week');
+            },
+            _getTotal: function(summaryRows) {
+                return summaryRows[0].value + '%';
+            },
+            _showDetails: function() {
+                this.fire('navigate', 'details');
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,30 @@
+<dom-module id="health-panel">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+        </style>
+        <img id="avatar" src="[[user.avatarUrl]]" />
+        <paper-tooltip for="avatar" id="nameTooltip">[[user.name]]</paper-tooltip>
+    </template>
+    <script>
+        Polymer({
+            is: 'health-panel',
+
+            properties: {
+                user: Object
+            },
+
+            ready: function() {
+                var animationConfig = this.$.nameTooltip.getAnimationConfig();
+                if (animationConfig[0]) {
+                    // Tweak the animation timing.
+                    animationConfig[0].entry[0].timing.delay = 0;
+                    animationConfig[0].entry[0].timing.duration = 200;
+                }
+            }
+        });
+    </script>
+</dom-module>
