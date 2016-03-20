@@ -4,11 +4,9 @@
   <template>
     <style>
       :host {
-        /*visibility: hidden;*/
         width: 100%;
-        margin-right:5px;
-        @apply(--layout-horizontal);
-        @apply(--layout-around-justified);
+        margin-right: 10px;
+        margin-left: 5px;
       }
 
       paper-material {
@@ -17,21 +15,22 @@
         background-color: rgba(96, 125, 139, 0.2);
       }
 
-      .health-block{
+      .health-block {
         box-shadow: 0 0 4px 1px rgba(221, 227, 231, 0.7);
-        margin-left:3px;
+        margin-left: 3px;
       }
 
       h2 {
-        margin-top:-3px;
+        margin-top: -3px;
 
       }
-      h2::after{
+
+      h2::after {
         content: '';
         display: block;
-        width:100%;
-        height:1px;
-        margin-top:-8px;
+        width: 100%;
+        height: 1px;
+        margin-top: -8px;
         background-color: #607D8B;
         box-shadow: 0 0 5px 1px #34414c;
       }
@@ -53,11 +52,11 @@
       }
 
       iframe {
-        border:none;
+        border: none;
       }
 
       ::-webkit-scrollbar {
-        border:none;
+        border: none;
       }
 
       iframe {
@@ -68,12 +67,15 @@
 
     <paper-material elevation="2">
       <h2>{{soldier.name}}</h2>
+
       <div>
         <span class="health-block"><iron-icon icon="favorite"></iron-icon> {{soldier.heartrate}}</span>
         <span class="health-block"><iron-icon icon="maps:directions-run"></iron-icon> {{soldier.activity}}</span>
         <span class="health-block"><iron-icon icon="android">VI</iron-icon> {{soldier.vi}}</span>
       </div>
-      <iframe src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(5)}}&to={{time(-3)}}&var-id={{soldier.id}}" width="250" height="167" frameborder="0"></iframe>
+      <iframe
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(5)}}&to={{time(-3)}}&var-id={{soldier.id}}"
+        width="250" height="167" frameborder="0"></iframe>
     </paper-material>
 
   </template>
@@ -101,7 +103,7 @@
               'entry': {
                 name: 'fade-in-animation',
                 node: this,
-                timing: {"delay": (1200) , "duration": 1300}
+                timing: {"delay": (1200), "duration": 1300}
 
               }
             }
@@ -123,7 +125,7 @@
 //      },
 
       time: function (mins) {
-        console.log(moment().subtract(mins, 'm').format() + ':  : ' + moment().add(mins, 'm'));
+//        console.log(moment().subtract(mins, 'm').format() + ':  : ' + moment().add(mins, 'm'));
         return moment().add(mins, 'm');
       }
 

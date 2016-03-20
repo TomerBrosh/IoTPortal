@@ -17,21 +17,32 @@
       }
 
       .graphs {
+        height:268px;
         @apply(--layout-horizontal);
+        @apply(--layout-scroling);
+        overflow-y: hidden;
+      }
+      .nothing::after {
+        content: 'אין';
+      }
+
+      .blank {
       }
 
 
     </style>
     <paper-material elevation="3">
-
       <toggle-container>
         <h2>{{currentStatus.toString}}</h2>
-        <div class="graphs">
+
+        <div class$="{{currentStatus.class}}">
           <template is="dom-repeat" items="{{currentStatus.array}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
+            <template is="dom-if" if="{{calcRow(index)}}">
+              <br>
+            </template>
           </template>
         </div>
-        <hr>
       </toggle-container>
       <h2>מצב כללי</h2>
       <iframe
@@ -114,6 +125,16 @@
         })
       },
 
+      calcRow: function (index) {
+        return (index != 0 && index % 3 == 0);
+      },
+      setBlank: function (index) {
+        debugger;
+        this.async(function () {
+          debugger;
+          document.getElementById("indx" + index).innerHTML = "</div><div class=\"graphs\">";
+        });
+      },
 
       orderSoldiers: function (soldiers) {
         var normal = [], hurt = [], critical = [], unknown = [],
@@ -154,18 +175,19 @@
         return all;
       },
       getCurrentStatus: function (status) {
+        debugger;
         switch (status) {
           case 0:
-            return {"array": this.normal, "toString": "חיילים במצב תקין:"};
+            return {"array": this.normal, "toString": "חיילים במצב תקין:", "class": (this.normal.length > 0 ? "graphs" : "nothing")};
             break;
           case 1:
-            return {"array": this.hurt, "toString": "חיילים במצב בינוני:"};
+            return {"array": this.hurt, "toString": "חיילים במצב בינוני:", "class": (this.hurt.length > 0 ? "graphs" : "nothing")};
             break;
           case 2:
-            return {"array": this.critical, "toString": "חיילים במצב קשה:"};
+            return {"array": this.critical, "toString": "חיילים במצב קשה:", "class": (this.critical.length > 0 ? "graphs" : "nothing")};
             break;
           case 3:
-            return {"array": this.unknown, "toString": "חיילים במצב לא ידוע:"};
+            return {"array": this.unknown, "toString": "חיילים במצב לא ידוע:", "class": (this.unknown.length > 0 ? "graphs" : "nothing")};
             break;
         }
       }

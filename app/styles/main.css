@@ -13,20 +13,18 @@ html {
 }
 
 ::-webkit-scrollbar {
-  width: 13px;
-}
-
-::-webkit-scrollbar-thumb:hover  {
-  visibility: visible;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 20px #b0e2ff;
+  -webkit-box-shadow: inset 0 0 10px #b0e2ff;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 3px;
+  background-color: #e1faff;
   -webkit-box-shadow: inset 0 0 6px #223945;
 }
 
