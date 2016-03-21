@@ -19,6 +19,7 @@
       .graphs {
         height:268px;
         @apply(--layout-horizontal);
+        @apply(--layout-around-justified);
         @apply(--layout-scroling);
         overflow-y: hidden;
       }
@@ -46,7 +47,7 @@
       </toggle-container>
       <h2>מצב כללי</h2>
       <iframe
-        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?editview=templating&panelId=2&fullscreen&from=1458412929222&to=1458413229222"
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=2&fullscreen&from={{time(10)}}&to={{time(-5)}}"
         width="100%" height="600" frameborder="0"></iframe>
     </paper-material>
 
@@ -129,11 +130,13 @@
         return (index != 0 && index % 3 == 0);
       },
       setBlank: function (index) {
-        debugger;
         this.async(function () {
-          debugger;
           document.getElementById("indx" + index).innerHTML = "</div><div class=\"graphs\">";
         });
+      },
+
+      time: function (mins) {
+        return (moment().subtract(mins, 'm').format('x'));
       },
 
       orderSoldiers: function (soldiers) {
@@ -175,7 +178,6 @@
         return all;
       },
       getCurrentStatus: function (status) {
-        debugger;
         switch (status) {
           case 0:
             return {"array": this.normal, "toString": "חיילים במצב תקין:", "class": (this.normal.length > 0 ? "graphs" : "nothing")};

@@ -7,6 +7,10 @@
         width: 100%;
         margin-right: 10px;
         margin-left: 5px;
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+        @apply(--layout-around-justified);
+
       }
 
       paper-material {
@@ -74,7 +78,7 @@
         <span class="health-block"><iron-icon icon="android">VI</iron-icon> {{soldier.vi}}</span>
       </div>
       <iframe
-        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(5)}}&to={{time(-3)}}&var-id={{soldier.id}}"
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(10)}}&to={{time(-5)}}&var-id={{soldier.id}}"
         width="250" height="167" frameborder="0"></iframe>
     </paper-material>
 
@@ -125,8 +129,7 @@
 //      },
 
       time: function (mins) {
-//        console.log(moment().subtract(mins, 'm').format() + ':  : ' + moment().add(mins, 'm'));
-        return moment().add(mins, 'm');
+        return (moment().subtract(mins, 'm').format('x'));
       }
 
 //      ready: function () {
