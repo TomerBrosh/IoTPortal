@@ -33,7 +33,6 @@
 
     </style>
     <paper-material elevation="3">
-      <toggle-container>
         <h2>מצב החיילים</h2>
 
           <template is="dom-repeat" items="{{critical}}" as="soldier">
@@ -51,12 +50,6 @@
           <template is="dom-repeat" items="{{normal}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
           </template>
-        <br>
-      </toggle-container>
-      <h2>מצב כללי</h2>
-      <iframe
-        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=2&fullscreen&from={{time(10)}}&to={{time(-5)}}theme=light"
-        width="100%" height="600" frameborder="0"></iframe>
     </paper-material>
 
   </template>
@@ -112,10 +105,6 @@
         }
       },
 
-//      listeners: {
-//        'neon-animation-finish': '_onNeonAnimationFinish'
-//      },
-
       show: function () {
         this.style.visibility = 'visible';
         this.playAnimation('entry');
@@ -127,14 +116,6 @@
         })
       },
 
-      calcRow: function (index) {
-        return (index != 0 && index % 3 == 0);
-      },
-      setBlank: function (index) {
-        this.async(function () {
-          document.getElementById("indx" + index).innerHTML = "</div><div class=\"graphs\">";
-        });
-      },
 
       time: function (mins) {
         return (moment().subtract(mins, 'm').format('x'));
