@@ -36,14 +36,12 @@
       <toggle-container>
         <h2>{{currentStatus.toString}}</h2>
 
-        <div class$="{{currentStatus.class}}">
           <template is="dom-repeat" items="{{currentStatus.array}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
             <template is="dom-if" if="{{calcRow(index)}}">
               <br>
             </template>
           </template>
-        </div>
       </toggle-container>
       <h2>מצב כללי</h2>
       <iframe
