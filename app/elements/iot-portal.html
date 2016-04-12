@@ -31,7 +31,7 @@
       <total-monitor id="totalMonitor" soldiers="[[soldiers]]" selected="{{selectedStatus}}"></total-monitor>
     </div>
     <div class="graph-container">
-      <graph-container soldiers="[[soldiers]]" selected="{{selectedStatus}}"></graph-container>
+      <graph-container soldiers="[[soldiers]]" ></graph-container>
     </div>
   </template>
 
@@ -49,11 +49,6 @@
           type: Number,
           observer: 'statusselected'
         }
-      },
-
-
-      statusselected: function () {
-        console.log(this.selectedStatus);
       },
 
       dataUrl: function (string) {

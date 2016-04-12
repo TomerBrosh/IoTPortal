@@ -75,7 +75,6 @@
       <div class="title">סטטוס חיילים:</div>
       <template is="dom-if" if="{{count}}">
         <paper-listbox>
-          <iron-selector selected="{{selected}}" class="vertical noutline">
             <div class="flex">
               <paper-icon-item>
                 <template is="dom-if" if="{{count.normal}}">
@@ -121,7 +120,6 @@
                 <span>{{count.unknown}}/{{count.total}} במצב לא ידוע</span>
               </paper-icon-item>
             </div>
-          </iron-selector>
         </paper-listbox>
       </template>
       <template is="dom-if" if="{{!count}}">
@@ -148,10 +146,7 @@
           value: null,
           computed: 'computeTotal(soldiers)'
         },
-        selected: {
-          type: Number,
-          notify: true
-        },
+
 
         animationConfig: {
           value: function () {

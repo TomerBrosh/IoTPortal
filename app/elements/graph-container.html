@@ -34,18 +34,28 @@
     </style>
     <paper-material elevation="3">
       <toggle-container>
-        <h2>{{currentStatus.toString}}</h2>
+        <h2>מצב החיילים</h2>
 
-          <template is="dom-repeat" items="{{currentStatus.array}}" as="soldier">
+          <template is="dom-repeat" items="{{critical}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
-            <template is="dom-if" if="{{calcRow(index)}}">
-              <br>
-            </template>
           </template>
+        <br>
+          <template is="dom-repeat" items="{{hurt}}" as="soldier">
+            <graph-personal soldier="{{soldier}}"></graph-personal>
+          </template>
+        <br>
+          <template is="dom-repeat" items="{{unknown}}" as="soldier">
+            <graph-personal soldier="{{soldier}}"></graph-personal>
+          </template>
+        <br>
+          <template is="dom-repeat" items="{{normal}}" as="soldier">
+            <graph-personal soldier="{{soldier}}"></graph-personal>
+          </template>
+        <br>
       </toggle-container>
       <h2>מצב כללי</h2>
       <iframe
-        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=2&fullscreen&from={{time(10)}}&to={{time(-5)}}"
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=2&fullscreen&from={{time(10)}}&to={{time(-5)}}theme=light"
         width="100%" height="600" frameborder="0"></iframe>
     </paper-material>
 
@@ -61,13 +71,6 @@
         soldiers: {
           type: Object,
           notify: true
-        },
-        selected: {
-          type: Number
-        },
-        currentStatus: {
-          type: Array,
-          computed: 'getCurrentStatus(selected)'
         },
         ordered: {
           type: Object,
@@ -138,10 +141,8 @@
       },
 
       orderSoldiers: function (soldiers) {
-        var normal = [], hurt = [], critical = [], unknown = [],
-          all = {"normal": [], "hurt": [], "critical": [], "unknown": []};
+        var normal = [], hurt = [], critical = [], unknown = [];
         soldiers.forEach(function (soldier) {
-          var basicInfo = {"id": soldier.id, "name": soldier.firstname + ' ' + soldier.lastname};
           var info = {
             "id": soldier.id, "name": soldier.firstname + ' ' + soldier.lastname, "vi": soldier.vi,
             "activity": soldier.activity, "heartrate": soldier.heart_rate
@@ -150,46 +151,28 @@
             case 0:
               normal.push(info);
               delete info.status;
-              all.normal.push(basicInfo);
               break;
             case 1:
               hurt.push(info);
               delete info.status;
-              all.hurt.push(basicInfo);
               break;
             case 2:
               critical.push(info);
               delete info.status;
-              all.critical.push(basicInfo);
               break;
             case 3:
               unknown.push(info);
               delete info.status;
-              all.unknown.push(basicInfo);
               break;
           }
         });
+        var checkDiff = ((this.normal != normal) || (this.hurt != hurt) ||
+        (this.critical != critical) || (this.unknown != unknown))
         this.normal = normal;
         this.hurt = hurt;
         this.critical = critical;
         this.unknown = unknown;
-        return all;
-      },
-      getCurrentStatus: function (status) {
-        switch (status) {
-          case 0:
-            return {"array": this.normal, "toString": "חיילים במצב תקין:", "class": (this.normal.length > 0 ? "graphs" : "nothing")};
-            break;
-          case 1:
-            return {"array": this.hurt, "toString": "חיילים במצב בינוני:", "class": (this.hurt.length > 0 ? "graphs" : "nothing")};
-            break;
-          case 2:
-            return {"array": this.critical, "toString": "חיילים במצב קשה:", "class": (this.critical.length > 0 ? "graphs" : "nothing")};
-            break;
-          case 3:
-            return {"array": this.unknown, "toString": "חיילים במצב לא ידוע:", "class": (this.unknown.length > 0 ? "graphs" : "nothing")};
-            break;
-        }
+        return (checkDiff)
       }
     });
   </script>
