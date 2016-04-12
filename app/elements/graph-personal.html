@@ -1,0 +1,143 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="graph-personal" attributes="soldiers index">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+        margin-right: 10px;
+        margin-left: 5px;
+        text-align: center;
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+        @apply(--layout-around-justified);
+
+      }
+
+      paper-material {
+        width: 250px;
+        height: 250px;
+        background-color: rgba(96, 125, 139, 0.2);
+      }
+
+      .health-block {
+        box-shadow: 0 0 4px 1px rgba(221, 227, 231, 0.7);
+        margin-left: 3px;
+      }
+
+      h2 {
+        margin-top: -3px;
+
+      }
+
+      h2::after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1px;
+        margin-top: -8px;
+        background-color: #607D8B;
+        box-shadow: 0 0 5px 1px #34414c;
+      }
+
+      iron-icon {
+        margin-left: 5px;
+      }
+
+      iron-icon[icon="android"] {
+        --iron-icon-fill-color: #2a8d3c;
+      }
+
+      iron-icon[icon="favorite"] {
+        --iron-icon-fill-color: #8e3230;
+      }
+
+      iron-icon[icon*="directions-run"] {
+        --iron-icon-fill-color: #755c26;
+      }
+
+      iframe {
+        border: none;
+      }
+
+      ::-webkit-scrollbar {
+        border: none;
+      }
+
+      iframe {
+        overflow: hidden;
+      }
+
+    </style>
+
+    <paper-material elevation="2">
+      <h2>{{soldier.name}}</h2>
+
+      <div>
+        <span class="health-block"><iron-icon icon="favorite"></iron-icon> {{soldier.heartrate}}</span>
+        <span class="health-block"><iron-icon icon="maps:directions-run"></iron-icon> {{soldier.activity}}</span>
+        <span class="health-block"><iron-icon icon="android">VI</iron-icon> {{soldier.vi}}</span>
+      </div>
+      <iframe
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(10)}}&to={{time(-5)}}&var-id={{soldier.id}}?theme=light"
+        width="250" height="167" frameborder="0"></iframe>
+    </paper-material>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'graph-personal',
+
+      behaviors: [Polymer.NeonAnimationBehavior, Polymer.NeonAnimationRunnerBehavior],
+
+      properties: {
+
+        soldier: {
+          type: Object,
+          notify: true,
+        },
+        index: {
+          type: Number,
+          value: 0
+        },
+
+        animationConfig: {
+          value: function () {
+            return {
+              // fade-in-animation is run with a 50ms delay from slide-down-animation
+              'entry': {
+                name: 'fade-in-animation',
+                node: this,
+                timing: {"delay": (1200), "duration": 1300}
+
+              }
+            }
+          }
+        }
+      },
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+//      _onNeonAnimationFinish: function () {
+//        console.log("loaded " + this.soldier.id + "'s graph");
+//      },
+
+//      show: function () {
+//        this.style.visibility = 'visible';
+//        this.playAnimation('entry');
+//      },
+
+      time: function (mins) {
+        return (moment().subtract(mins, 'm').format('x'));
+      }
+
+//      ready: function () {
+//        this.async(function () {
+//          this.show();
+//        })
+//      }
+    });
+  </script>
+</dom-module>

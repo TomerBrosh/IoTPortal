@@ -1,0 +1,99 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="toggle-container" attributes="delay duration">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+      }
+
+      paper-fab {
+        --paper-fab-background: #607D8B;
+        --paper-fab-keyboard-focus-background: #8ec2d0;
+        position: relative;
+        right: 48%;
+      }
+
+      #toggleMe {
+        visibility: visible;
+      }
+
+    </style>
+
+    <paper-fab icon="{{dropIcon}}" on-tap="toggleGraphs" mini></paper-fab>
+    <div id="toggleMe">
+      <content></content>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'toggle-container',
+
+      behaviors: [Polymer.NeonAnimationBehavior, Polymer.NeonAnimationRunnerBehavior],
+
+      properties: {
+        visible: {
+          type: Boolean,
+          value: true
+        },
+
+        animationConfig: {
+          value: function () {
+            return {
+              // fade-in-animation is run with a 50ms delay from slide-down-animation
+              'toggleUp': [{
+                name: 'fade-out-animation',
+                node: this.$.toggleMe,
+                timing: {"delay": this.delay || 200, "duration": this.duration || 800}
+              }, {
+                name: 'slide-up-animation',
+                node: this.$.toggleMe,
+                timing: {"delay": (this.delay || 200) + 50, "duration": this.duration || 800}
+
+              }],
+              'toggleDown': {
+                name: 'fade-in-animation',
+                node: this.$.toggleMe,
+                timing: {'delay': this.delay || 200, 'duration': this.duration || 800}
+              }
+            }
+          }
+        },
+
+        dropIcon: {
+          type: String,
+          value: "arrow-drop-up"
+        }
+      },
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      _onNeonAnimationFinish: function () {
+        debugger;
+        if (this.visible) {
+          this.$.toggleMe.style.visibility = "hidden";
+          this.$.toggleMe.style.display = "none";
+        }
+
+
+        this.visible = !this.visible;
+      },
+
+      toggleGraphs: function () {
+        if (this.dropIcon == "arrow-drop-up") {
+          this.playAnimation('toggleUp');
+          this.dropIcon = "arrow-drop-down"
+        }
+        else {
+          this.$.toggleMe.style.display = "";
+          this.$.toggleMe.style.visibility = "visible";
+          this.playAnimation('toggleDown');
+          this.dropIcon = "arrow-drop-up"
+        }
+      }
+
+    });
+  </script>
+</dom-module>
