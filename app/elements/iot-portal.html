@@ -20,6 +20,10 @@
         @apply(--layout-horizontal);
       }
 
+      .team-container {
+
+      }
+
       .critical {
         background-color: red;
       }
@@ -29,26 +33,19 @@
     <div class="head-container">
       <iot-toolbar class="toolbar" soldiers="[[soldiers]]"></iot-toolbar>
     </div>
-    <div class="graph-container">
-      <graph-container soldiers="[[soldiers]]" selected="{{selectedStatus}}"></graph-container>
+    <div class="team-container">
+      <team-container teams="[[teams]]" selected="{{selectedStatus}}"></team-container>
     </div>
   </template>
 
-  <!--<h1>{{info.soldiers.length}} חיילים</h1>-->
-  <!--<template is="dom-repeat" items="{{info.soldiers}}" as="soldier">-->
-  <!--<paper-material elevation="{{soldier.status}}" animated style="background-color: rgb(220, 255, 247)" onclick="this.elevation++" onmouseout="this.elevation&#45;&#45;" onmousewheel="this.elevation=2">-->
-  <!--<p>שם: {{soldier.name}} | סטטוס:  {{soldier.status}}</p>-->
-
-  <!--<p>דם: {{soldier.bloodType}}</p>-->
-  <!--</paper-material>-->
-  <!--</template>-->
-  <!--</template>-->
-  </template>
   <script>
     Polymer({
       is: 'iot-portal',
 
       properties: {
+        teams:{
+          type:Array
+        },
         soldiers: {
           type: Object,
           notify: true
@@ -74,12 +71,13 @@
       handleResponse: function (data) {
         var soldierService = this.$.soldierService;
         this.loadData = setTimeout(function () {
-          console.log("requesting soldiers");
           soldierService.generateRequest();
         }, 3000)
       },
       ready: function () {
-        console.log("started iot-portal");
+        fetch("http://iotservices.westeurope.cloudapp.azure.com:5000/api/teams").then(function (res) {
+          this.properties.teams = res;
+        });
       }
     })
     ;
