@@ -28,7 +28,6 @@
                on-response="handleResponse" last-response="{{soldiers}}" last-error="ajaxError"></iron-ajax>
     <div class="head-container">
       <iot-toolbar class="toolbar" soldiers="[[soldiers]]"></iot-toolbar>
-      <total-monitor id="totalMonitor" soldiers="[[soldiers]]" selected="{{selectedStatus}}"></total-monitor>
     </div>
     <div class="graph-container">
       <graph-container soldiers="[[soldiers]]" selected="{{selectedStatus}}"></graph-container>
