@@ -27,6 +27,7 @@
       .critical {
         background-color: red;
       }
+
     </style>
     <iron-ajax id="soldierService" auto url="http://iotservices.westeurope.cloudapp.azure.com:5000/api/metrics"
                on-response="handleResponse" last-response="{{soldiers}}" last-error="ajaxError"></iron-ajax>
@@ -34,7 +35,7 @@
       <iot-toolbar class="toolbar" soldiers="[[soldiers]]"></iot-toolbar>
     </div>
     <div class="team-container">
-      <team-container teams="[[teams]]" selected="{{selectedStatus}}"></team-container>
+      <team-container teams="[[teams]]"></team-container>
     </div>
   </template>
 
@@ -49,16 +50,7 @@
         soldiers: {
           type: Object,
           notify: true
-        },
-        selectedStatus: {
-          type: Number,
-          observer: 'statusselected'
         }
-      },
-
-
-      statusselected: function () {
-        console.log(this.selectedStatus);
       },
 
       dataUrl: function (string) {

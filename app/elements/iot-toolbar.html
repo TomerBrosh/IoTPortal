@@ -64,22 +64,8 @@
 
     </style>
     <paper-material class="toolbar">
-      <div class="title">פורטל IoT</div>
-      <div class="secondary">עוד משפט גנרי שלא נותן כלום...</div>
-      <!--<paper-fab id="toolbarHurt" icon="warning" disabled$="{{!count.hurt}}"></paper-fab>-->
-      <!--<paper-fab id="toolbarCrit" icon="maps:local-hospital" disabled$="{{!count.critical}}"></paper-fab>-->
-      <!--<paper-fab id="toolbarUnknown" icon="help" disabled$="{{!count.unknown}}"></paper-fab>-->
-      <!--<template is="dom-if" if$="{{count}}">-->
-        <!--<template is="dom-if" if$="{{count.hurt}}">-->
-          <!--<paper-badge for="toolbarHurt" label$="{{count.hurt}}"></paper-badge>-->
-        <!--</template>-->
-        <!--<template is="dom-if" if$="{{count.critical}}">-->
-          <!--<paper-badge for="toolbarCrit" label$="{{count.critical}}"></paper-badge>-->
-        <!--</template>-->
-        <!--<template is="dom-if" if$="{{count.unknown}}">-->
-          <!--<paper-badge for="toolbarUnknown" label$="{{count.unknown}}"></paper-badge>-->
-        <!--</template>-->
-      <!--</template>-->
+      <div class="title">שדה וירטואלי</div>
+      <div class="secondary">מ ערכת שמאפשרת לנתר </div>
     </paper-material>
   </template>
   <script>
@@ -89,18 +75,6 @@
       behaviors: [Polymer.NeonAnimationBehavior, Polymer.NeonAnimationRunnerBehavior],
 
       properties: {
-
-        soldiers: {
-          type: Object,
-          notify: true
-        },
-
-        count: {
-          type: Object,
-          value: null,
-          computed: 'computeTotal(soldiers)',
-          notify: true
-        },
 
         animationConfig: {
           value: function () {
@@ -140,25 +114,6 @@
         })
       },
 
-      computeTotal: function (soldiers) {
-
-        var critical = null, hurt = null, unknown = null;
-        soldiers.forEach(function (soldier) {
-          switch (soldier.status) {
-            case 1:
-              hurt++;
-              break;
-            case 2:
-              critical++;
-              break;
-            case 3:
-              unknown++;
-              break;
-          }
-        });
-        return {'critical': critical, 'hurt': hurt, 'unknown': unknown}
-
-      }
     });
   </script>
 </dom-module>
