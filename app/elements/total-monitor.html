@@ -40,18 +40,18 @@
 
       iron-icon {
         margin-left: 5px;
-        --iron-icon-fill-color: rgba(148, 148, 148, 0.13);
+        --iron-icon-fill-color: rgba(148, 148, 148, 0.33);
       }
 
       iron-icon[icon="check-circle"][colored] {
         --iron-icon-fill-color: #7cffa1;
       }
 
-      iron-icon[icon="warning"][colored] {
+      iron-icon[icon*="healing"][colored] {
         --iron-icon-fill-color: #ffc853;
       }
 
-      iron-icon[icon*="local-hospital"][colored] {
+      iron-icon[icon="warning"][colored] {
         --iron-icon-fill-color: #8e3230;
       }
 
@@ -90,10 +90,10 @@
             <div class="flex">
               <paper-icon-item>
                 <template is="dom-if" if="{{count.hurt}}">
-                  <iron-icon icon="warning" item-icon colored></iron-icon>
+                  <iron-icon icon="image:healing" item-icon colored></iron-icon>
                 </template>
                 <template is="dom-if" if="{{!count.hurt}}">
-                  <iron-icon icon="warning" item-icon></iron-icon>
+                  <iron-icon icon="image:healing" item-icon></iron-icon>
                 </template>
                 <span>{{count.hurt}}/{{count.total}} במצב בינוני</span>
               </paper-icon-item>
@@ -101,10 +101,10 @@
             <div class="flex">
               <paper-icon-item>
                 <template is="dom-if" if="{{count.critical}}">
-                  <iron-icon icon="maps:local-hospital" item-icon colored></iron-icon>
+                  <iron-icon icon="warning" item-icon colored></iron-icon>
                 </template>
                 <template is="dom-if" if="{{!count.critical}}">
-                  <iron-icon icon="maps:local-hospital" item-icon></iron-icon>
+                  <iron-icon icon="warning" item-icon></iron-icon>
                 </template>
                 <span>{{count.critical}}/{{count.total}} במצב קשה</span>
               </paper-icon-item>
@@ -192,16 +192,16 @@
         soldiers.forEach(function (soldier) {
           total++;
           switch (soldier.status) {
-            case 0:
+            case 1:
               normal++;
               break;
-            case 1:
+            case 2:
               hurt++;
               break;
-            case 2:
+            case 3:
               critical++;
               break;
-            case 3:
+            case 0:
               unknown++;
               break;
           }

@@ -21,35 +21,45 @@
         @apply(--layout-flex-start);
         flex-wrap: wrap;
         position: relative;
-        right:3%;
+        right: 3%;
 
       }
+
       .nothing::after {
         content: 'אין';
       }
 
-      .blank {
+      iframe {
+        overflow: hidden;
+        border: none;
       }
-
 
     </style>
     <paper-material elevation="3">
-        <h2>מצב החיילים</h2>
 
+      <h1>מצב כללי</h1>
+      <iframe
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=2&fullscreen&from={{time(10)}}&to={{time(-5)}}&theme=light"
+        width="100%" height="600" frameborder="0">
+      </iframe>
+
+
+      <h1>מצב החיילים</h1>
       <div class="graphs">
-          <template is="dom-repeat" items="{{critical}}" as="soldier">
-            <graph-personal soldier="{{soldier}}"></graph-personal>
-          </template>
-          <template is="dom-repeat" items="{{hurt}}" as="soldier">
-            <graph-personal soldier="{{soldier}}"></graph-personal>
-          </template>
-          <template is="dom-repeat" items="{{unknown}}" as="soldier">
-            <graph-personal soldier="{{soldier}}"></graph-personal>
-          </template>
-          <template is="dom-repeat" items="{{normal}}" as="soldier">
-            <graph-personal soldier="{{soldier}}"></graph-personal>
-          </template>
+        <template is="dom-repeat" items="{{critical}}" as="soldier">
+          <graph-personal soldier="{{soldier}}"></graph-personal>
+        </template>
+        <template is="dom-repeat" items="{{hurt}}" as="soldier">
+          <graph-personal soldier="{{soldier}}"></graph-personal>
+        </template>
+        <template is="dom-repeat" items="{{unknown}}" as="soldier">
+          <graph-personal soldier="{{soldier}}"></graph-personal>
+        </template>
+        <template is="dom-repeat" items="{{normal}}" as="soldier">
+          <graph-personal soldier="{{soldier}}"></graph-personal>
+        </template>
       </div>
+
     </paper-material>
 
   </template>
@@ -96,7 +106,7 @@
             return {
               // fade-in-animation is run with a 50ms delay from slide-down-animation
               'entry': {
-                name: 'slide-from-right-animation',
+                name: 'fade-in-animation',
                 node: this,
                 timing: {"delay": 1500, "duration": 1000}
               }
@@ -121,36 +131,54 @@
         return (moment().subtract(mins, 'm').format('x'));
       },
 
+      checkForChanges: function (current, newer) {
+        if (current.length == newer.length
+           && current.every(function (element, index) {
+            return element.heartrate == newer[index].heartrate
+          })) return false;
+        return true;
+      },
+
       orderSoldiers: function (soldiers) {
+        console.log("refresh");
         var normal = [], hurt = [], critical = [], unknown = [];
         soldiers.forEach(function (soldier) {
           var info = {
             "id": soldier.id, "shem": soldier.shem, "vi": soldier.vi,
             "activity": soldier.activity, "heartrate": soldier.heart_rate,
-            ironNumber:soldier.iron_number, "status": soldier.status
+            ironNumber: soldier.iron_number, "status": soldier.status
           };
           switch (soldier.status) {
-            case 0:
+            case 1:
               normal.push(info);
               break;
-            case 1:
+            case 2:
               hurt.push(info);
               break;
-            case 2:
+            case 3:
               critical.push(info);
               break;
-            case 3:
+            case 0:
+              info.vi = "?";
+              info.heartrate = "?";
+              info.activity = "?";
               unknown.push(info);
               break;
           }
         });
-        var checkDiff = ((this.normal != normal) || (this.hurt != hurt) ||
-        (this.critical != critical) || (this.unknown != unknown))
-        this.normal = normal;
-        this.hurt = hurt;
-        this.critical = critical;
-        this.unknown = unknown;
-        return (checkDiff)
+        if (this.checkForChanges(this.normal, normal)){
+          this.normal = normal;
+        }
+        if (this.checkForChanges(this.hurt, hurt)) {
+          this.hurt = hurt;
+        }
+        if (this.checkForChanges(this.critical, critical)) {
+          this.critical = critical;
+        }
+        if (this.checkForChanges(this.unknown, unknown)) {
+          this.unknown = unknown;
+        }
+        return null
       }
     });
   </script>
