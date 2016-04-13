@@ -17,11 +17,12 @@
       }
 
       .graphs {
-        height:268px;
         @apply(--layout-horizontal);
-        @apply(--layout-around-justified);
-        @apply(--layout-scroling);
-        overflow-y: hidden;
+        @apply(--layout-flex-start);
+        flex-wrap: wrap;
+        position: relative;
+        right:3%;
+
       }
       .nothing::after {
         content: 'אין';
@@ -35,21 +36,20 @@
     <paper-material elevation="3">
         <h2>מצב החיילים</h2>
 
+      <div class="graphs">
           <template is="dom-repeat" items="{{critical}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
           </template>
-        <br>
           <template is="dom-repeat" items="{{hurt}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
           </template>
-        <br>
           <template is="dom-repeat" items="{{unknown}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
           </template>
-        <br>
           <template is="dom-repeat" items="{{normal}}" as="soldier">
             <graph-personal soldier="{{soldier}}"></graph-personal>
           </template>
+      </div>
     </paper-material>
 
   </template>
@@ -125,25 +125,22 @@
         var normal = [], hurt = [], critical = [], unknown = [];
         soldiers.forEach(function (soldier) {
           var info = {
-            "id": soldier.id, "name": soldier.firstname + ' ' + soldier.lastname, "vi": soldier.vi,
-            "activity": soldier.activity, "heartrate": soldier.heart_rate
+            "id": soldier.id, "shem": soldier.shem, "vi": soldier.vi,
+            "activity": soldier.activity, "heartrate": soldier.heart_rate,
+            ironNumber:soldier.iron_number, "status": soldier.status
           };
           switch (soldier.status) {
             case 0:
               normal.push(info);
-              delete info.status;
               break;
             case 1:
               hurt.push(info);
-              delete info.status;
               break;
             case 2:
               critical.push(info);
-              delete info.status;
               break;
             case 3:
               unknown.push(info);
-              delete info.status;
               break;
           }
         });

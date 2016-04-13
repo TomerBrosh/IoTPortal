@@ -4,9 +4,7 @@
   <template>
     <style>
       :host {
-        width: 100%;
-        margin-right: 10px;
-        margin-left: 5px;
+        margin: 10px;
         text-align: center;
       }
 
@@ -14,6 +12,7 @@
         width: 250px;
         height: 250px;
         background-color: rgba(96, 125, 139, 0.2);
+        /*background-color: white;*/
       }
 
       .health-block {
@@ -62,12 +61,13 @@
 
       iframe {
         overflow: hidden;
+        margin-top: 2px;
       }
 
     </style>
 
     <paper-material elevation="2">
-      <h2>{{soldier.name}}</h2>
+      <h2 id="title">{{soldier.shem}}</h2>
 
       <div>
         <span class="health-block"><iron-icon icon="favorite"></iron-icon> {{soldier.heartrate}}</span>
@@ -75,8 +75,10 @@
         <span class="health-block"><iron-icon icon="android">VI</iron-icon> {{soldier.vi}}</span>
       </div>
       <iframe
-        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(10)}}&to={{time(-5)}}&var-id={{soldier.id}}?theme=light"
-        width="250" height="167" frameborder="0"></iframe>
+        src="http://iotservices.westeurope.cloudapp.azure.com:3000/dashboard-solo/db/soldier?panelId=1&fullscreen&from={{time(10)}}&to={{time(-5)}}&var-id={{soldier.id}}&theme=light"
+        width="250" height="167" frameborder="0"
+        id="iframe">
+      </iframe>
     </paper-material>
 
   </template>
@@ -118,6 +120,23 @@
 
       time: function (mins) {
         return (moment().subtract(mins, 'm').format('x'));
+      },
+
+      ready: function () {
+
+        switch (this.soldier.status) {
+          case 1:
+            this.$.title.style.background = "rgba(255, 200, 83, 0.37)";
+            break;
+          case 2:
+            this.$.title.style.background = "rgba(142, 50, 48, 0.76)";
+            this.$.title.style.color = "aliceblue";
+            break;
+          case 3:
+            this.$.title.style.background = "rgba(137, 147, 197, 0.53)";
+            this.$.title.style.color = "aliceblue";
+            break;
+        }
       }
 
     });
